@@ -6,7 +6,7 @@
   //  edge: 'top' or 'bottom' (which edge of the element to watch)
   $.fn.smack = function (options) {
     // Default edge is bottom
-    options = $.extend({}, {'edge': 'bottom'}, options);
+    options = $.extend({}, {'edge': 'bottom', 'once': false}, options);
     // Default is the absolute top of the screen or bottom of the screen
     // Override with any newly supplied options
     options = $.extend({}, {
@@ -50,7 +50,8 @@
 
         if (distanceFromTop >= thresholdFromBottom) {
             bumSmackOptions.bottom.deferred.resolve();
-            bumSmackOptions.bottom = false;
+            if (bumSmackOptions.once)
+              bumSmackOptions.bottom = false;
             $this.data('bum-smack', bumSmackOptions);
         }
       }
@@ -62,13 +63,14 @@
 
         if (scrollTop <= thresholdFromTop) {
             bumSmackOptions.top.deferred.resolve();
-            bumSmackOptions.top = false;
+            if (bumSmackOptions.once)
+              bumSmackOptions.top = false;
             $this.data('bum-smack', bumSmackOptions);
         }
       }
 
       // If the configured smack for the edge has been met
-      if (!bumSmackOptions.top && !bumSmackOptions.bottom) {
+      if (bumSmackOptions && !bumSmackOptions.top && !bumSmackOptions.bottom) {
         $this.off('scroll.smack');
       }
 
